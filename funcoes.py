@@ -98,31 +98,76 @@ def display_end_message(win):
 
 # Função para inicializar a grade
 def initialize_grid():
-    grid = [[0] * GRID_SIZE for _ in range(GRID_SIZE)]
-    add_random_tile(grid)
-    add_random_tile(grid)
-    return grid
+    # Inicializar o grid
+    grid = []  # Lista vazia para representar a grade
+    
+    # Criar uma grade 4x4 cheia de zeros
+    for _ in range(GRID_SIZE):  
+        row = [0] * GRID_SIZE  # Cria uma linha com valores 0
+        grid.append(row)       # Adiciona a linha ao grid
+    
+    # Adicionar blocos aleatórios no grid
+    add_random_tile(grid)  # Adiciona o primeiro bloco aleatório
+    add_random_tile(grid)  # Adiciona o segundo bloco aleatório
+
 
 
 # Adicionar um número aleatório (2 ou 4) em uma célula vazia
 def add_random_tile(grid):
-    empty_cells = [(r, c) for r in range(GRID_SIZE) for c in range(GRID_SIZE) if grid[r][c] == 0]
+    # Lista para armazenar as posições vazias
+    empty_cells = []
+    
+    # Iterar pelas linhas do grid
+    for x in range(GRID_SIZE):
+        # Iterar pelas colunas do grid
+        for y in range(GRID_SIZE):
+            # Se o valor na posição (x, y) for 0 (bloco vazio)
+            if grid[x][y] == 0:
+                # Adiciona a posição (x, y) à lista de células vazias
+                empty_cells.append((x, y))
+    
+    # Se existirem células vazias
     if empty_cells:
-        r, c = random.choice(empty_cells)
-        grid[r][c] = 2 if random.random() < 0.9 else 4
+        # Escolhe aleatoriamente uma célula vazia da lista
+        x, y = random.choice(empty_cells)
+        # Define o valor 2 com 90% de chance, ou 4 com 10% de chance
+        grid[x][y] = 2 if random.random() < 0.9 else 4
+
 
 # Renderizar a grade
 def draw_grid(grid):
+
+    # Preencher o fundo da tela com a cor de fundo
     screen.fill(BACKGROUND_COLOR)
-    for r in range(GRID_SIZE):
-        for c in range(GRID_SIZE):
-            value = grid[r][c]
-            color = TILE_COLORS.get(value, (205, 193, 180))
-            pygame.draw.rect(screen, color, (c * TILE_SIZE, r * TILE_SIZE, TILE_SIZE, TILE_SIZE))
+
+    for x in range(GRID_SIZE):  # o x representa a linha
+        for y in range(GRID_SIZE):  # o y representa a coluna
+            # Obter o valor na posição atual (x, y)
+            value = grid[x][y]
+            # Determinar a cor do bloco com base no valor
+            color = TILE_COLORS.get(value, (205, 193, 180))  # Cor padrão se o valor não estiver no dicionário
+            
+            # Desenhar o retângulo (bloco) na tela
+            pygame.draw.rect(
+                screen,  # a parte onde será desenhado
+                color,  # cor do retângulo
+                (y * TILE_SIZE, x * TILE_SIZE, TILE_SIZE, TILE_SIZE)  # Posição e tamanho do bloco
+            )
+            
+            # Se o bloco não estiver vazio (valor diferente de 0)
             if value != 0:
-                text = font.render(str(value), True, (119, 110, 101))
-                text_rect = text.get_rect(center=(c * TILE_SIZE + TILE_SIZE // 2, r * TILE_SIZE + TILE_SIZE // 2))
+                # Renderizar o valor como texto
+                text = font.render(str(value), True, (119, 110, 101))  # Texto na cor cinza escuro
+                
+                # Centralizar o texto dentro do bloco
+                text_rect = text.get_rect(
+                    center=(y * TILE_SIZE + TILE_SIZE // 2, x * TILE_SIZE + TILE_SIZE // 2)
+                )
+                
+                # Desenhar o texto na tela
                 screen.blit(text, text_rect)
+
+
 
 # capturar os eventos do teclado
 def handle_input(grid, event):
