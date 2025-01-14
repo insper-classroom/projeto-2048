@@ -110,7 +110,7 @@ def initialize_grid():
     add_random_tile(grid)  # Adiciona o primeiro bloco aleatório
     add_random_tile(grid)  # Adiciona o segundo bloco aleatório
 
-
+    return grid
 
 # Adicionar um número aleatório (2 ou 4) em uma célula vazia
 def add_random_tile(grid):
